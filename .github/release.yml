@@ -1,0 +1,9 @@
+# Groups the notes from "Generate release notes". See docs/releases.md.
+changelog:
+  categories:
+    - title: Changes
+      labels: ["*"]
+      exclude:
+        labels: ["type/dependencies"]
+    - title: Dependency updates
+      labels: ["type/dependencies"]

@@ -1,0 +1,35 @@
+name: Bug report
+description: Something doesn't work as it should
+labels: ["type/bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: For a security problem, don't open an issue. See SECURITY.md.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary of bug
+      description: What you saw, including any error message. Screenshots help; hide personal data in them.
+      placeholder: Uploading a CSV with 600 MACs shows a blank page instead of an error.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Where you saw it. Add the institution or browser if they might matter.
+      placeholder: v0.4.0-rc.1 on the test server, Firefox
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce
+      placeholder: |
+        1. Log in as an admin
+        2. Go to Devices > Upload CSV
+        3. Pick a file with 600 lines
+  - type: textarea
+    id: expected
+    attributes:
+      label: Acceptance criteria
+      description: What should happen instead.
+      placeholder: An error saying the limit is 500 devices.

@@ -1,0 +1,24 @@
+# Opens dependency update PRs once a week. See "Dependencies" in
+# docs/repository-guidelines.md.
+# TODO: add an entry for each package ecosystem the project uses (pip, npm,
+# docker, ...), with the same settings as the one below.
+# Options: https://docs.github.com/en/code-security/dependabot/working-with-dependabot/dependabot-options-reference
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    # Wait 7 days after a release before proposing it. Security updates aren't delayed.
+    cooldown:
+      default-days: 7
+    # Without this, Dependabot creates and adds its own "dependencies" labels.
+    labels: ["type/dependencies"]
+    # Titles come out as "chore(deps): ...", which passes the PR title check.
+    commit-message:
+      prefix: chore
+      include: scope
+    # One PR with all the week's updates, instead of one PR per action.
+    groups:
+      github-actions:
+        patterns: ["*"]

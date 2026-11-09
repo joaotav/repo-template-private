@@ -1,0 +1,18 @@
+name: Other
+description: Refactoring, docs, tests, maintenance or anything else
+labels: ["needs-triage"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What should change, and why.
+      placeholder: Move MAC address validation into one function. Today it's copied in three places, and a fix to one copy missed the others.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: What someone could check to confirm it's done.
+      placeholder: All three places call the same function, and its tests cover invalid MACs.

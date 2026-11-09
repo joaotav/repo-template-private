@@ -1,0 +1,26 @@
+name: Feature request
+description: Something new the system should do
+labels: ["type/feature", "needs-triage"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary of feature
+      description: The problem it solves, and for whom. Start with the problem, not the solution.
+      placeholder: Admins register devices one at a time, which takes hours in labs with hundreds of devices.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: An idea is enough.
+      placeholder: Let admins upload a CSV file with many MAC addresses at once.
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: What someone could check to confirm it works.
+      placeholder: |
+        - An admin can upload a CSV with up to 500 MACs
+        - Invalid lines are reported with their line number

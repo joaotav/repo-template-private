@@ -1,0 +1,2 @@
+# Cursor stays out of these files. See "Setup" in CONTRIBUTING.md.
+.env

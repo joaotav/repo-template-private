@@ -1,0 +1,32 @@
+# Runs the tests on PRs and on every commit that lands on main.
+# Changes that only touch docs skip it, to save CI minutes.
+name: CI
+
+on:
+  pull_request:
+    paths-ignore: ["**.md", "docs/**"]
+  push:
+    branches: [main]
+    paths-ignore: ["**.md", "docs/**"]
+
+permissions:
+  contents: read
+
+# A newer run for the same branch cancels the older one, to save CI minutes.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    # TODO: once you know how long the tests take, add timeout-minutes with
+    # some margin. Until then, a stuck run can use up to 6 hours of minutes.
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # TODO: set up the language with dependency caching (for example
+      # actions/setup-python with `cache: pip`), install the dependencies and
+      # run the tests.
+      - run: echo "No tests yet"

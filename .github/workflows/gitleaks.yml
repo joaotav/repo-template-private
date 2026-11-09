@@ -1,0 +1,52 @@
+# Looks for passwords, tokens and keys in new commits. Runs on PRs and on
+# main, because our GitHub plan can't block direct pushes to main.
+#
+# Runs the gitleaks command-line tool directly. The gitleaks GitHub Action
+# needs a license key for repos owned by an organization.
+name: gitleaks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+# A newer run for the same branch cancels the older one, to save CI minutes.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gitleaks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      # Dependabot doesn't update this. To update by hand, change the version
+      # and copy the linux_x64 line from gitleaks_<version>_checksums.txt on
+      # https://github.com/gitleaks/gitleaks/releases
+      GITLEAKS_VERSION: 8.30.1
+      GITLEAKS_SHA256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
+      # Only the new commits: the PR's commits, or the commits just pushed to main.
+      BEFORE: ${{ github.event.pull_request.base.sha || github.event.before }}
+      AFTER: ${{ github.event.pull_request.head.sha || github.event.after }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install gitleaks
+        run: |
+          file="gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          curl -sSfL -o "$file" "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/${file}"
+          echo "${GITLEAKS_SHA256}  ${file}" | sha256sum --check
+          tar -xzf "$file" gitleaks
+      - name: Scan new commits
+        run: |
+          range="${BEFORE}..${AFTER}"
+          # The first push to a branch has no "before" commit: scan its whole history.
+          if [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then range="$AFTER"; fi
+          # gitleaks reports success when git rejects the range, so check it first.
+          git rev-list --count "$range" > /dev/null
+          ./gitleaks git --redact --verbose --log-opts="$range" .

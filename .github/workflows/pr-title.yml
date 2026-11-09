@@ -1,0 +1,42 @@
+# Checks that the PR title starts with a known type, such as "feat:" or
+# "fix(login):". The title becomes the commit message on main.
+# See docs/commit-messages.md.
+name: PR title
+
+# Runs only when the title can change, not on every push, to save CI minutes.
+# If this becomes a required check (GitHub Team), add `synchronize` back:
+# a required check that's missing on the latest commit blocks the merge.
+on:
+  pull_request:
+    types: [opened, edited, reopened]
+
+permissions:
+  pull-requests: read
+
+# A newer run for the same PR cancels the older one, to save CI minutes.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  pr-title:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: amannn/action-semantic-pull-request@2252a14e810aa9b85c2d560bd7070c802206ecf6 # v6.1.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # Keep in sync with the types in docs/commit-messages.md.
+          types: |
+            feat
+            fix
+            docs
+            style
+            refactor
+            perf
+            test
+            build
+            ci
+            chore
+            revert

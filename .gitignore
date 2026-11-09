@@ -1,0 +1,4 @@
+# Real passwords, tokens and keys. See "Setup" in CONTRIBUTING.md.
+.env
+
+# TODO: add the ignores for the project's language and tools.
